@@ -26,7 +26,7 @@ extension ViewController {
         }
         
         // set navigation bar
-        selectionMenu.setNavigationBar(title: "Select Player", attributes: [NSAttributedStringKey.foregroundColor: UIColor.white], barTintColor: #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1), tintColor: UIColor.white)
+        selectionMenu.setNavigationBar(title: "Select Player", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white], barTintColor: #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1), tintColor: UIColor.white)
         
         
         // set default selected items when menu present on screen.
@@ -103,6 +103,9 @@ extension ViewController {
             self.selectedDataArray = selectedItems
         }
         
+        // title
+        menu.setNavigationBar(title: "Select Player")
+        
         // on dissmis
         menu.onDismiss = { selectedItems in
             
@@ -125,7 +128,7 @@ extension ViewController {
         }
         
         // set navigation bar
-        selectionMenu.setNavigationBar(title: "Select Player", attributes: [NSAttributedStringKey.foregroundColor: UIColor.white], barTintColor: #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1), tintColor: UIColor.white)
+        selectionMenu.setNavigationBar(title: "Select Player", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white], barTintColor: #colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1), tintColor: UIColor.white)
         
         // selected items
         selectionMenu.setSelectedItems(items: selectedDataArray) { (text, isSelected, selectedItems) in
@@ -167,7 +170,7 @@ extension ViewController {
     }
     
     // Alert or Actionsheet
-    func showAsAlertController(style: UIAlertControllerStyle, title: String?, action: String?, height: Double?) {
+    func showAsAlertController(style: UIAlertController.Style, title: String?, action: String?, height: Double?) {
         let selectionType: SelectionType = style == .alert ? .Single : .Multiple
         
         let selectionMenu =  RSSelectionMenu(selectionType: selectionType, dataSource: simpleDataArray) { (cell, name, indexPath) in

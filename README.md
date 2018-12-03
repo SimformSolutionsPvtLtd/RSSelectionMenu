@@ -2,14 +2,16 @@
 
 An elegant selection list or dropdown menu for iOS with single or multiple selections.
 
-### What's New in version 5.2.1
-
-- Carthage support
+### What's New in version 5.3.2
 - New presentation styles added: **Alert** & **Actionsheet**
+- Show title with Popover
 - Auto Dismiss flag added (True or False)
+- Support for Swift 4.2
+- Carthage support
 
 ![Alt text](https://raw.githubusercontent.com/rushisangani/RSSelectionMenu/master/Images/Alert.png "Alert")
 ![Alt text](https://raw.githubusercontent.com/rushisangani/RSSelectionMenu/master/Images/Actionsheet.png "Actionsheet")
+![Alt text](https://raw.githubusercontent.com/rushisangani/RSSelectionMenu/master/Images/Popover.jpg "Popover")
 
 ![Alt text](https://raw.githubusercontent.com/rushisangani/RSSelectionMenu/master/Images/01.gif "Single Selection")
 ![Alt text](https://raw.githubusercontent.com/rushisangani/RSSelectionMenu/master/Images/03.gif "Custom")
@@ -51,7 +53,7 @@ iOS 9.0+ | Xcode 8.3+ | Swift 3.0+
 ### CocoaPods
 
 ```ruby
-pod 'RSSelectionMenu' or pod 'RSSelectionMenu', '~> 5.2.1'
+pod 'RSSelectionMenu' or pod 'RSSelectionMenu', '~> 5.3.2'
 ```
 
 ### Carthage
@@ -68,7 +70,7 @@ $ brew install carthage
 To integrate RSSelectionMenu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "rushisangani/RSSelectionMenu" ~> 5.2.1
+github "rushisangani/RSSelectionMenu" ~> 5.3.2
 ```
 Then follow below steps:
 - Run `carthage update` to build the framework.
@@ -152,7 +154,7 @@ selectionMenu.show(style: .Popover(sourceView: sourceView, size: nil), from: sel
 selectionMenu.show(style: .Alert(title: "Select", action: nil, height: nil), from: self)
 
 // Show as Actionsheet
-selectionMenu.show(style: .Alert(title: nil, action: "Done", height: nil), from: self)
+selectionMenu.show(style: .Actionsheet(title: nil, action: "Done", height: nil), from: self)
 ```
 
 ### Event Handlers

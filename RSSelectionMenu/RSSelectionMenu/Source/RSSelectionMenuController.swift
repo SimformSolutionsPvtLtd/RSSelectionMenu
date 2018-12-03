@@ -1,7 +1,7 @@
 //
 //  RSSelectionMenuController.swift
 //
-//  Copyright (c) 2017 Rushi Sangani
+//  Copyright (c) 2018 Rushi Sangani
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -150,14 +150,12 @@ open class RSSelectionMenu<T>: UIViewController, UIPopoverPresentationController
     // MARK: - Setup Layout
     
     fileprivate func setupLayout() {
-        if let frame = parentController?.view.frame {
+        if let frame = parentController?.view.bounds {
             self.view.frame = frame
         }
         
         // navigation bar theme
-        if let theme = navigationBarTheme {
-            setNavigationBarTheme(theme)
-        }
+        setNavigationBarTheme()
     }
     
     override open func viewDidLayoutSubviews() {
@@ -175,18 +173,20 @@ open class RSSelectionMenu<T>: UIViewController, UIPopoverPresentationController
         if case .Formsheet = menuPresentationStyle {
             
             tableView?.layer.cornerRadius = 8
-            self.backgroundView.frame = (window??.frame)!
+            self.backgroundView.frame = (window??.bounds)!
+            var tableViewSize = CGSize.zero
             
             if UIDevice.current.userInterfaceIdiom == .phone {
             
-                if UIDevice.current.orientation == .portrait {
-                    self.tableView?.frame.size = CGSize(width: backgroundView.frame.size.width - 80, height: backgroundView.frame.size.height - 260)
+                if UIApplication.shared.statusBarOrientation == .portrait {
+                    tableViewSize = CGSize(width: backgroundView.frame.size.width - 80, height: backgroundView.frame.size.height - 260)
                 }else {
-                    self.tableView?.frame.size = CGSize(width: backgroundView.frame.size.width - 200, height: backgroundView.frame.size.height - 100)
+                    tableViewSize = CGSize(width: backgroundView.frame.size.width - 200, height: backgroundView.frame.size.height - 100)
                 }
             }else {
-                self.tableView?.frame.size = CGSize(width: backgroundView.frame.size.width - 300, height: backgroundView.frame.size.height - 400)
+                tableViewSize = CGSize(width: backgroundView.frame.size.width - 300, height: backgroundView.frame.size.height - 400)
             }
+            self.tableView?.frame.size = tableViewSize
             self.tableView?.center = self.backgroundView.center
             
         }else {
@@ -265,7 +265,7 @@ extension RSSelectionMenu {
     }
     
     /// Navigationbar title and color
-    public func setNavigationBar(title: String, attributes:[NSAttributedStringKey: Any]? = nil, barTintColor: UIColor? = nil, tintColor: UIColor? = nil) {
+    public func setNavigationBar(title: String, attributes:[NSAttributedString.Key: Any]? = nil, barTintColor: UIColor? = nil, tintColor: UIColor? = nil) {
         self.navigationBarTheme = NavigationBarTheme(title: title, attributes: attributes, color: barTintColor, tintColor: tintColor)
     }
     
@@ -348,6 +348,7 @@ extension RSSelectionMenu {
             tobePresentController = UINavigationController(rootViewController: self)
         }
         else if case let .Popover(sourceView, size) = with {
+            tobePresentController = UINavigationController(rootViewController: self)
             tobePresentController.modalPresentationStyle = .popover
             if size != nil { tobePresentController.preferredContentSize = size! }
             
@@ -368,13 +369,20 @@ extension RSSelectionMenu {
         else if case let .Actionsheet(title, action, height) = with {
             tobePresentController = getAlertViewController(style: .actionSheet, title: title, action: action, height: height)
             tobePresentController.setValue(self, forKey: contentViewController)
+            
+            // present as popover for iPad
+            if let popoverController = tobePresentController.popoverPresentationController {
+                popoverController.sourceView = self.view
+                popoverController.permittedArrowDirections = []
+                popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            }
         }
         
         from.present(tobePresentController, animated: true, completion: nil)
     }
     
     // get alert controller
-    fileprivate func getAlertViewController(style: UIAlertControllerStyle, title: String?, action: String?, height: Double?) -> UIAlertController {
+    fileprivate func getAlertViewController(style: UIAlertController.Style, title: String?, action: String?, height: Double?) -> UIAlertController {
         let alertController = UIAlertController(title: title, message: nil, preferredStyle: style)
         
         let actionTitle = action ?? doneButtonTitle
@@ -394,17 +402,21 @@ extension RSSelectionMenu {
     }
     
     // navigation bar
-    fileprivate func setNavigationBarTheme(_ theme: NavigationBarTheme) {
-        if let navigationBar = self.navigationBar {
+    fileprivate func setNavigationBarTheme() {
+        guard let navigationBar = self.navigationBar else { return }
+        
+        guard let theme = self.navigationBarTheme else {
             
-            navigationBar.barTintColor = theme.color
-            navigationBar.tintColor = theme.tintColor ?? UIColor.white
-            navigationItem.title = theme.title
-            #if swift(>=4.0)
-             navigationBar.titleTextAttributes = theme.attributes
-            #elseif swift(>=3.0)
-            navigationBar.titleTextAttributes = theme.attributes as [String: Any]?
-            #endif
+            // hide navigationbar for popover, if no title present
+            if case .Popover = self.menuPresentationStyle {
+                navigationBar.isHidden = true
+            }
+            return
         }
+        
+        navigationBar.barTintColor = theme.color
+        navigationBar.tintColor = theme.tintColor ?? UIColor.white
+        navigationItem.title = theme.title
+        navigationBar.titleTextAttributes = theme.attributes
     }
 }

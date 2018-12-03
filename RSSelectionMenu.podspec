@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
           
 	s.name         = "RSSelectionMenu"
-  	s.version      = "5.2.1"
+  	s.version      = "5.3.2"
 
     s.summary      = "An elegant selection list or dropdown menu for iOS with single or multiple selections."
   	s.description  = <<-DESC
@@ -22,5 +22,5 @@ Pod::Spec.new do |s|
   	s.source_files = "RSSelectionMenu/**/*.swift"
 
     s.requires_arc = true
-    s.pod_target_xcconfig = { "SWIFT_VERSION" => "4" }
+    s.pod_target_xcconfig = { "SWIFT_VERSION" => "4.2" }
 end
